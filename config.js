@@ -1,0 +1,22 @@
+{
+    "pipework":"sudo /home/david/pipework/pipework",
+    "container": 
+    [
+        {
+            "name":"diagserver-8081",
+            "image":"customed/diagnosticserver",
+            "volumes":{"/home/david/diagserver-8081/diagdata":"/diagdata"},
+            "ports":{"8081":"8080"},
+            "network-interface":"enp0s25",
+            "network-address":"dhcp"
+        },
+        {
+            "name":"diagserver-8082",
+            "image":"customed/diagnosticserver",
+            "volumes":{"/home/david/diagserver-8082/diagdata":"/diagdata"},
+            "ports":{"8082":"8080"},
+            "network-interface":"enp0s25",
+            "network-address":"192.168.0.100/24"
+        }
+    ]
+}
