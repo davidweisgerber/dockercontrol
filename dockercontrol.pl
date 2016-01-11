@@ -8,7 +8,6 @@ use File::Path qw(make_path);
 my $jsonText = read_file("config.js") or die "Could not open config file";
 my $json = decode_json($jsonText);
 
-my $pipework = $json->{"pipework"};
 my $action = $ARGV[0] || "";
 
 if ($action eq "check") {
@@ -97,15 +96,16 @@ sub start {
     
     system($startString);
     
-    if (defined($config->{"network-interface"})) {
-        my $pipeworkString = $pipework." ".$config->{"network-interface"}." ".$_[0]." ";
-        if ($config->{"network-address"} eq "dhcp") {
-            $pipeworkString .= "dhclient";
-        } else {
-            $pipeworkString .= $config->{"network-address"};
-        }
-        
-        system($pipeworkString);
+    if (defined($config->{"network-address"})) {
+        print "Setting-network address...\n";
+        my $pid = `docker inspect -f '{{.State.Pid}}' $_[0]`;
+        chomp($pid);
+        print "PID: $pid\n";
+        system("mkdir -p /var/run/netns");
+        print "Did mkdir, doing ln\n";
+        system("ln -s /proc/$pid/ns/net /var/run/netns/$pid");
+        print "Did ln, doing ip netns\n";
+        system("ip netns exec $pid ip addr replace ".$config->{"network-address"}."/16 dev eth0");
     }
 }
 
