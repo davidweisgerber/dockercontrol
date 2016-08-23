@@ -44,7 +44,7 @@ sub getByName {
 
 sub check {
     my $checkresult = `docker inspect $_[0] 2>&1`;
-    if ($checkresult =~ /^Error:/) {
+    if ($checkresult =~ /Error: No such image/) {
         return "not present";
     }
     
@@ -92,8 +92,13 @@ sub start {
         $startString .= " -v ".$key.":".$config->{"volumes"}->{$key};
     }
     
+    if (defined($config->{"arguments"})) {
+        $startString .= " ".$config->{"arguments"};
+    }
+    
     $startString .= " ".$config->{"image"};
     
+    print "$startString\n";
     system($startString);
     
     if (defined($config->{"network-address"})) {
