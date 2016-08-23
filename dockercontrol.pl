@@ -5,7 +5,7 @@ use Data::Dumper;
 use File::Slurp;
 use File::Path qw(make_path);
 
-my $jsonText = read_file("config.js") or die "Could not open config file";
+my $jsonText = read_file("/dockerdata/config.js") or die "Could not open config file";
 my $json = decode_json($jsonText);
 
 my $action = $ARGV[0] || "";
