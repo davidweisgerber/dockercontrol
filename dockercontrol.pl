@@ -111,6 +111,7 @@ sub start {
         system("ln -s /proc/$pid/ns/net /var/run/netns/$pid");
         print "Did ln, doing ip netns\n";
         system("ip netns exec $pid ip addr replace ".$config->{"network-address"}."/16 dev eth0");
+        system("ip netns exec $pid ip route change 172.17.0.0/16 dev eth0 src ".$config->{"network-address"});
     }
 }
 
